@@ -1,4 +1,4 @@
-package com.em26.polar_application;
+package com.em26;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

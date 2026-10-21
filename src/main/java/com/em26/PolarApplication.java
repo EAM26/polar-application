@@ -1,4 +1,4 @@
-package com.em26.polar_application;
+package com.em26;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
