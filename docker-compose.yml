@@ -1,0 +1,15 @@
+services:
+  polar-app:
+    build:
+      context: .
+    image: polar-app:latest
+    ports:
+      - "8080:8080"
+    environment:
+      H2_DB_PASSWORD: "${H2_DB_PASSWORD}"
+    volumes:
+      - polar-data:/app/data
+    restart: unless-stopped
+
+volumes:
+  polar-data:
