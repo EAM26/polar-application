@@ -8,6 +8,11 @@ import com.em26.repository.TrainingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class TrainingService {
@@ -15,10 +20,39 @@ public class TrainingService {
     private final TrainingMapper trainingMapper;
 
 
-
     public TrainingResponse createTraining(TrainingRequest request) {
-        Training savedTraining =  trainingRepository.save(trainingMapper.mapToEntity(request));
-        return trainingMapper.mapToResponse(savedTraining);
+        Training training = trainingMapper.mapToEntity(request);
 
+//        todo: replace with csv reader methods
+        populateTemporaryTestData(training);
+        return trainingMapper.mapToResponse(trainingRepository.save(training));
+    }
+
+    private void populateTemporaryTestData(Training training) {
+        training.setSportType("RUNNING");
+        training.setStartTime(LocalTime.of(8, 0));
+        training.setStartDate(LocalDate.of(2026, 10, 21));
+        training.setDurationSeconds(3600);
+        training.setDistanceMeters(10000);
+    }
+
+    public List<TrainingResponse> getAllTrainings() {
+        return trainingRepository.findAll()
+                .stream()
+                .map(trainingMapper::mapToResponse)
+                .toList();
+    }
+
+    public Optional<TrainingResponse> getTrainingById(Long id) {
+        return trainingRepository.findById(id)
+                .map(trainingMapper::mapToResponse);
+    }
+
+    public boolean deleteTrainingById(Long id) {
+        if(trainingRepository.existsById(id)) {
+            trainingRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 }

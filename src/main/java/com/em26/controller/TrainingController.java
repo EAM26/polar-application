@@ -6,10 +6,9 @@ import com.em26.service.TrainingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/training")
@@ -20,9 +19,27 @@ public class TrainingController {
 
     @PostMapping
     public ResponseEntity<TrainingResponse> createTraining(@RequestBody TrainingRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body( trainingService.createTraining(request));
+        return ResponseEntity.status(HttpStatus.CREATED).body(trainingService.createTraining(request));
     }
 
+    @GetMapping
+    public ResponseEntity<List<TrainingResponse>> getAllTrainings() {
+        return ResponseEntity.ok(trainingService.getAllTrainings());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<TrainingResponse> getTrainingById(@PathVariable Long id) {
+        return trainingService.getTrainingById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteTrainingById(@PathVariable Long id) {
+        boolean isDeleted = trainingService.deleteTrainingById(id);
+        if(isDeleted) return ResponseEntity.ok("Training deleted");
+        return ResponseEntity.notFound().build();
+    }
 
 
 }
