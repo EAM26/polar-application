@@ -1,8 +1,11 @@
 package com.em26.controller;
 
-import com.em26.model.Training;
+import com.em26.dto.TrainingRequest;
+import com.em26.dto.TrainingResponse;
 import com.em26.service.TrainingService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,7 +19,10 @@ public class TrainingController {
     private final TrainingService trainingService;
 
     @PostMapping
-    public Training createTraining(@RequestBody Training training) {
-        return trainingService.createTraining(training);
+    public ResponseEntity<TrainingResponse> createTraining(@RequestBody TrainingRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body( trainingService.createTraining(request));
     }
+
+
+
 }

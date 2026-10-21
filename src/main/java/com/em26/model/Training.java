@@ -1,8 +1,13 @@
 package com.em26.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import org.hibernate.annotations.CreationTimestamp;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -10,6 +15,9 @@ import java.time.LocalTime;
 
 @Entity
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Training {
 
     @Id
@@ -24,8 +32,6 @@ public class Training {
 
     private Integer durationSeconds;
     private Integer distanceMeters;
-
-    @CreationTimestamp
     private LocalDateTime createdAt;
 
 
