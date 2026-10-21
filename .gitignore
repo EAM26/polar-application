@@ -31,4 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### H2 db ###
 /data/polar-db.mv.db
