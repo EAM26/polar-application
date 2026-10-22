@@ -34,3 +34,7 @@ build/
 
 ### H2 db ###
 /data/polar-db.mv.db
+
+### Env ###
+/.env
+/data/polar-db.trace.db
