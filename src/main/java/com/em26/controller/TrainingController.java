@@ -1,6 +1,5 @@
 package com.em26.controller;
 
-import com.em26.dto.TrainingRequest;
 import com.em26.dto.TrainingResponse;
 import com.em26.service.TrainingService;
 import lombok.RequiredArgsConstructor;
@@ -18,13 +17,13 @@ public class TrainingController {
     private final TrainingService trainingService;
 
     @PostMapping
-    public ResponseEntity<TrainingResponse> createTraining(@RequestBody TrainingRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(trainingService.createTraining(request));
+    public ResponseEntity<TrainingResponse> createTraining() {
+        return ResponseEntity.status(HttpStatus.CREATED).body(trainingService.createTraining());
     }
 
     @PostMapping("/fake")
-    public ResponseEntity<TrainingResponse> createFakeTraining(@RequestBody TrainingRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(trainingService.createFakeTraining(request));
+    public ResponseEntity<TrainingResponse> createFakeTraining() {
+        return ResponseEntity.status(HttpStatus.CREATED).body(trainingService.createFakeTraining());
     }
 
     @GetMapping
