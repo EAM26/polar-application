@@ -1,6 +1,5 @@
 package com.em26.mapper;
 
-import com.em26.dto.TrainingRequest;
 import com.em26.dto.TrainingResponse;
 import com.em26.model.Training;
 import org.springframework.stereotype.Component;
@@ -10,10 +9,11 @@ import java.time.LocalDateTime;
 @Component
 public class TrainingMapper {
 
-    public Training mapToEntity(TrainingRequest request) {
+    public Training mapToEntity() {
         LocalDateTime createdAt = LocalDateTime.now();
         return Training.builder()
-                .name(checkName(request, createdAt))
+                .name(("Empty training " +  createdAt))
+//                .name(checkName(request, createdAt))
                 .createdAt(createdAt)
                 .build();
 
@@ -30,14 +30,5 @@ public class TrainingMapper {
                 training.getDistanceMeters(),
                 training.getCreatedAt()
         );
-    }
-
-    private String checkName(TrainingRequest request, LocalDateTime createdAt) {
-        if(request.name() == null || request.name().isBlank()) {
-            return "Empty training: " + createdAt;
-        }
-        else {
-            return request.name();
-        }
     }
 }

@@ -1,6 +1,5 @@
 package com.em26.service;
 
-import com.em26.dto.TrainingRequest;
 import com.em26.dto.TrainingResponse;
 import com.em26.mapper.TrainingMapper;
 import com.em26.model.Training;
@@ -20,21 +19,11 @@ public class TrainingService {
     private final TrainingMapper trainingMapper;
 
 
-    public TrainingResponse createTraining(TrainingRequest request) {
-        Training training = trainingMapper.mapToEntity(request);
-
-//        todo: replace with csv reader methods
-        populateTemporaryTestData(training);
+    public TrainingResponse createTraining() {
+        Training training = trainingMapper.mapToEntity();
         return trainingMapper.mapToResponse(trainingRepository.save(training));
     }
 
-    private void populateTemporaryTestData(Training training) {
-        training.setSportType("RUNNING");
-        training.setStartTime(LocalTime.of(8, 0));
-        training.setStartDate(LocalDate.of(2026, 10, 21));
-        training.setDurationSeconds(3600);
-        training.setDistanceMeters(10000);
-    }
 
     public List<TrainingResponse> getAllTrainings() {
         return trainingRepository.findAll()
@@ -54,5 +43,17 @@ public class TrainingService {
             return true;
         }
         return false;
+    }
+
+    public TrainingResponse createFakeTraining() {
+        Training training = trainingMapper.mapToEntity();
+        training.setName("RUNNING: 2026-10-21 08:05:10");
+        training.setSportType("RUNNING");
+        training.setStartTime(LocalTime.of(8, 10, 20));
+        training.setStartDate(LocalDate.of(2026, 10, 1));
+        training.setDurationSeconds(3600);
+        training.setDistanceMeters(10000);
+
+         return trainingMapper.mapToResponse(trainingRepository.save(training));
     }
 }
