@@ -24,17 +24,18 @@ public class TrainingService {
         Training training = trainingMapper.mapToEntity(request);
 
 //        todo: replace with csv reader methods
-        populateTemporaryTestData(training);
+//        populateTemporaryTestData(training);
         return trainingMapper.mapToResponse(trainingRepository.save(training));
     }
 
-    private void populateTemporaryTestData(Training training) {
-        training.setSportType("RUNNING");
-        training.setStartTime(LocalTime.of(8, 0));
-        training.setStartDate(LocalDate.of(2026, 10, 21));
-        training.setDurationSeconds(3600);
-        training.setDistanceMeters(10000);
-    }
+//    private void populateTemporaryTestData(Training training) {
+//
+//        training.setSportType("RUNNING");
+//        training.setStartTime(LocalTime.of(8, 0));
+//        training.setStartDate(LocalDate.of(2026, 10, 21));
+//        training.setDurationSeconds(3600);
+//        training.setDistanceMeters(10000);
+//    }
 
     public List<TrainingResponse> getAllTrainings() {
         return trainingRepository.findAll()
@@ -54,5 +55,17 @@ public class TrainingService {
             return true;
         }
         return false;
+    }
+
+    public TrainingResponse createFakeTraining(TrainingRequest request) {
+        Training training = trainingMapper.mapToEntity(request);
+        training.setName("2026-10-21 08:05:10 RUNNING");
+        training.setSportType("Running");
+        training.setStartTime(LocalTime.of(8, 10, 20));
+        training.setStartDate(LocalDate.of(2026, 10, 1));
+        training.setDurationSeconds(3600);
+        training.setDistanceMeters(10000);
+
+         return trainingMapper.mapToResponse(trainingRepository.save(training));
     }
 }

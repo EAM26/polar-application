@@ -34,7 +34,7 @@ public class TrainingMapper {
 
     private String checkName(TrainingRequest request, LocalDateTime createdAt) {
         if(request.name() == null || request.name().isBlank()) {
-            return "Empty training: " + createdAt;
+            return  createdAt + " - Empty training";
         }
         else {
             return request.name();
