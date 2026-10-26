@@ -18,8 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class TrainingServiceTest {
@@ -95,7 +94,7 @@ class TrainingServiceTest {
     }
 
     @Test
-    void createTrainingShouldReturnTrainingFromRepo() {
+    void createEmptyTrainingShouldReturnEmptyRepo() {
 
 //        Given
         when(trainingMapper.mapToEntity()).thenReturn(trainingEmptyBeforeSaved);
@@ -108,6 +107,11 @@ class TrainingServiceTest {
 //        Then
         assertThat(result).isSameAs(responseEmpty);
         verify(trainingRepository).save(trainingEmptyBeforeSaved);
+    }
+
+    @Test
+    void createTrainingWithDataShouldReturnRepo() {
+//        Todo: write when datareader is finished and mapper adjusted
     }
 
     @Test
@@ -153,7 +157,31 @@ class TrainingServiceTest {
         assertThat(result).isEmpty();
     }
 //
-//    @Test
-//    void deleteTrainingById() {
-//    }
+    @Test
+    void deleteTrainingByIdShouldReturnTrue() {
+//        Given
+        when(trainingRepository.existsById(idSavedTraining)).thenReturn(true);
+
+//        When
+        boolean result = trainingService.deleteTrainingById(idSavedTraining);
+
+//        Then
+        assertThat(result).isTrue();
+        verify(trainingRepository).existsById(idSavedTraining);
+        verify(trainingRepository).deleteById(idSavedTraining);
+    }
+
+    @Test
+    void deleteTrainingWithFakeIdShouldReturnFalse() {
+//        Given
+        when(trainingRepository.existsById(missingId)).thenReturn(false);
+
+//        When
+        boolean result = trainingService.deleteTrainingById(missingId);
+
+//        Then
+        assertThat(result).isFalse();
+        verify(trainingRepository).existsById(missingId);
+        verify(trainingRepository, never()).deleteById(missingId);
+    }
 }

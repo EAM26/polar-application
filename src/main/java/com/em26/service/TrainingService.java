@@ -7,8 +7,6 @@ import com.em26.repository.TrainingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,15 +43,15 @@ public class TrainingService {
         return false;
     }
 
-    public TrainingResponse createFakeTraining() {
-        Training training = trainingMapper.mapToEntity();
-        training.setName("RUNNING: 2026-10-21 08:05:10");
-        training.setSportType("RUNNING");
-        training.setStartTime(LocalTime.of(8, 10, 20));
-        training.setStartDate(LocalDate.of(2026, 10, 1));
-        training.setDurationSeconds(3600);
-        training.setDistanceMeters(10000);
-
-         return trainingMapper.mapToResponse(trainingRepository.save(training));
-    }
+//    public TrainingResponse createFakeTraining() {
+//        Training training = trainingMapper.mapToEntity();
+//        training.setName("RUNNING: 2026-10-21 08:05:10");
+//        training.setSportType("RUNNING");
+//        training.setStartTime(LocalTime.of(8, 10, 20));
+//        training.setStartDate(LocalDate.of(2026, 10, 1));
+//        training.setDurationSeconds(3600);
+//        training.setDistanceMeters(10000);
+//
+//         return trainingMapper.mapToResponse(trainingRepository.save(training));
+//    }
 }
