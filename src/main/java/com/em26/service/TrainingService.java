@@ -9,7 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -20,28 +22,42 @@ public class TrainingService {
 
 
     public TrainingResponse createTraining(MultipartFile file) {
+
+        //        imports all the csv rows to one object
         List<String[]> csvRows = importService.importCsv(file);
-        Training training = trainingMapper.mapToEntity();
+
+        //        creates a map for of first two rows (headers and values)
+        Map<String, String> metaData = getMetaDataFromCsvRows(csvRows);
+
+        //        creates a training and sets meta fields
+        Training training = trainingMapper.mapMetaDataToTraining(metaData);
+
+//        reads row 2 till end  in one List of String[]
+//        maps the List to List<DataRow>
+//        sets TrainingId in Data row and save DataRow (flush & Transactional)
+//        training.setDataRows() = dataRowService.createDataRows(csvRows, training);
+
+//        save and return training
         return trainingMapper.mapToResponse(trainingRepository.save(training));
     }
 
-//    //        imports all the csv rows to one object
-//    List<String[]> csvRows = importService.importCsv(file);
-//
-//    //        creates a map for of first two rows (headers and values)
-//    Map<String, String> metaData = getMetaDataFromCsvRows(csvRows);
-//
-//    //        creates a training and sets meta fields
-//    Training training = trainingMapper.mapMetaDataToTraining(metaData);
-//
-////        reads row 2 till end  in one List of String[]
-////        maps the List to List<DataRow>
-////        sets TrainingId in Data row and save DataRow (flush & Transactional)
-//        training.setDataRows() = dataRowService.createDataRows(csvRows, training);
-//
-////        save and return training
-//        return trainingMapper.mapToResponse(trainingRepository.save(training));
-//}
+    private Map<String, String> getMetaDataFromCsvRows(List<String[]> csvRows) {
+        String[] headers = csvRows.get(0);
+        String[] values = csvRows.get(1);
+
+        if(headers.length != values.length) {
+            throw new IllegalArgumentException("Error in reading metadata: mismatch length for headers and values");
+        }
+
+        Map<String, String> metaData = new HashMap<>();
+        for (int i = 0; i < headers.length; i++) {
+            metaData.put(headers[i], values[i]);
+        }
+        return metaData;
+
+
+
+    }
 
 
     public List<TrainingResponse> getAllTrainings() {

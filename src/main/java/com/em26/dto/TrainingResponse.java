@@ -12,6 +12,7 @@ public record TrainingResponse(
         String totalDistanceMeta,
         String avgSpeedMeta,
         String caloriesMeta,
+        String avgHeartRateMeta,
         LocalDateTime createdAt
 ) {
 }

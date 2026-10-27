@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -31,6 +32,9 @@ public class Training {
     private String totalDistanceMeta;
     private String avgSpeedMeta;
     private String caloriesMeta;
+    private String avgHeartRateMeta;
+
+    @CreationTimestamp
     private LocalDateTime createdAt;
 
 
