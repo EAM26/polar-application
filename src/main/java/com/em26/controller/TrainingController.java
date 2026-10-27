@@ -33,9 +33,7 @@ public class TrainingController {
 
     @GetMapping("/{id}")
     public ResponseEntity<TrainingResponse> getTrainingById(@PathVariable Long id) {
-        return trainingService.getTrainingById(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        return ResponseEntity.ok(trainingService.getTrainingById(id));
     }
 
     @DeleteMapping("/{id}")
