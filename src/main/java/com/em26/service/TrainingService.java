@@ -5,6 +5,7 @@ import com.em26.exception.RecordNotFoundException;
 import com.em26.mapper.TrainingMapper;
 import com.em26.model.Training;
 import com.em26.repository.TrainingRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,8 +20,10 @@ public class TrainingService {
     private final TrainingRepository trainingRepository;
     private final TrainingMapper trainingMapper;
     private final CsvDataImportService importService;
+    private final DataRowService dataRowService;
 
 
+    @Transactional
     public TrainingResponse createTraining(MultipartFile file) {
 
         //        imports all the csv rows to one object
@@ -35,7 +38,7 @@ public class TrainingService {
 //        reads row 2 till end  in one List of String[]
 //        maps the List to List<DataRow>
 //        sets TrainingId in Data row and save DataRow (flush & Transactional)
-//        training.setDataRows() = dataRowService.createDataRows(csvRows, training);
+        training.setDataRowList(dataRowService.createDataRows(csvRows, training));
 
 //        save and return training
         return trainingMapper.mapToResponse(trainingRepository.save(training));
