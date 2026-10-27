@@ -1,6 +1,7 @@
 package com.em26.service;
 
 import com.em26.dto.TrainingResponse;
+import com.em26.exception.RecordNotFoundException;
 import com.em26.mapper.TrainingMapper;
 import com.em26.model.Training;
 import com.em26.repository.TrainingRepository;
@@ -8,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,9 +30,10 @@ public class TrainingService {
                 .toList();
     }
 
-    public Optional<TrainingResponse> getTrainingById(Long id) {
-        return trainingRepository.findById(id)
-                .map(trainingMapper::mapToResponse);
+    public TrainingResponse getTrainingById(Long id) {
+        Training training =  trainingRepository.findById(id).orElseThrow(() ->
+                        new RecordNotFoundException("No training found: " + id));
+        return trainingMapper.mapToResponse(training);
     }
 
     public boolean deleteTrainingById(Long id) {

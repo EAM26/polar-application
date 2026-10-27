@@ -1,6 +1,7 @@
 package com.em26.service;
 
 import com.em26.dto.TrainingResponse;
+import com.em26.exception.RecordNotFoundException;
 import com.em26.mapper.TrainingMapper;
 import com.em26.model.Training;
 import com.em26.repository.TrainingRepository;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -109,10 +111,6 @@ class TrainingServiceTest {
         verify(trainingRepository).save(trainingEmptyBeforeSaved);
     }
 
-    @Test
-    void createTrainingWithDataShouldReturnRepo() {
-//        Todo: write when datareader is finished and mapper adjusted
-    }
 
     @Test
     void getAllTrainingsShouldReturnListOfTwoTrainings() {
@@ -121,13 +119,10 @@ class TrainingServiceTest {
         when(trainingMapper.mapToResponse(trainingEmptySaved)).thenReturn(responseEmpty);
         when(trainingMapper.mapToResponse(trainingWithDataSaved)).thenReturn(responseWithData);
 
-
 //        When
         List<TrainingResponse> results = trainingService.getAllTrainings();
 
 //        Then
-        assertThat(results.size()).isEqualTo(2);
-        assertThat(results).hasSize(2);
         assertThat(results).containsExactlyInAnyOrder(responseEmpty, responseWithData);
     }
 
@@ -139,22 +134,22 @@ class TrainingServiceTest {
 
 
 //        When
-        Optional<TrainingResponse> result = trainingService.getTrainingById(idSavedTraining);
+        TrainingResponse result = trainingService.getTrainingById(idSavedTraining);
 
 //        Then
-        assertThat(result).contains(responseWithData);
+        assertThat(result).isSameAs(responseWithData);
     }
 
     @Test
-    void getTrainingByIdShouldReturnEmptyForMissingId() {
+    void getTrainingByIdShouldThrowRecordNotFoundException() {
 //        Given
         when(trainingRepository.findById(missingId)).thenReturn(Optional.empty());
 
-//        When
-        Optional<TrainingResponse> result = trainingService.getTrainingById(missingId);
+//        When Then
+        assertThatThrownBy(() -> trainingService.getTrainingById(missingId))
+                .isInstanceOf(RecordNotFoundException.class)
+                .hasMessage("No training found: " + missingId);
 
-//        Then
-        assertThat(result).isEmpty();
     }
 //
     @Test
