@@ -3,7 +3,11 @@ package com.em26.service;
 import com.em26.parser.CustomCsvReader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.util.List;
 
 @Service
@@ -12,12 +16,13 @@ public class CsvDataImportService {
 
     private final CustomCsvReader csvReader;
 
-    public void importCsv(String filePath) {
-        List<String[]> csvRows = csvReader.readCsvRows(filePath);
-        for (int i = 0; i < 10; i++) {
-            System.out.println((csvRows.get(i)[2]));
+    public List<String[]> importCsv(MultipartFile file) {
+        try (InputStream inputStream = file.getInputStream()) {
+            return csvReader.readCsvRows(inputStream);
+        } catch (IOException e) {
+            throw new UncheckedIOException(
+                    "Error in reading file: ", e);
         }
     }
-
 
 }

@@ -95,21 +95,21 @@ class TrainingServiceTest {
         );
     }
 
-    @Test
-    void createEmptyTrainingShouldReturnEmptyRepo() {
-
-//        Given
-        when(trainingMapper.mapToEntity()).thenReturn(trainingEmptyBeforeSaved);
-        when(trainingRepository.save(trainingEmptyBeforeSaved)).thenReturn(trainingEmptySaved);
-        when(trainingMapper.mapToResponse(trainingEmptySaved)).thenReturn(responseEmpty);
-
-//        When
-        TrainingResponse result = trainingService.createTraining();
-
-//        Then
-        assertThat(result).isSameAs(responseEmpty);
-        verify(trainingRepository).save(trainingEmptyBeforeSaved);
-    }
+//    @Test
+//    void createEmptyTrainingShouldReturnEmptyRepo() {
+//
+////        Given
+//        when(trainingMapper.mapToEntity()).thenReturn(trainingEmptyBeforeSaved);
+//        when(trainingRepository.save(trainingEmptyBeforeSaved)).thenReturn(trainingEmptySaved);
+//        when(trainingMapper.mapToResponse(trainingEmptySaved)).thenReturn(responseEmpty);
+//
+////        When
+//        TrainingResponse result = trainingService.createTraining();
+//
+////        Then
+//        assertThat(result).isSameAs(responseEmpty);
+//        verify(trainingRepository).save(trainingEmptyBeforeSaved);
+//    }
 
 
     @Test

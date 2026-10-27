@@ -7,6 +7,7 @@ import com.em26.model.Training;
 import com.em26.repository.TrainingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -15,9 +16,11 @@ import java.util.List;
 public class TrainingService {
     private final TrainingRepository trainingRepository;
     private final TrainingMapper trainingMapper;
+    private final CsvDataImportService importService;
 
 
-    public TrainingResponse createTraining() {
+    public TrainingResponse createTraining(MultipartFile file) {
+        List<String[]> csvRows = importService.importCsv(file);
         Training training = trainingMapper.mapToEntity();
         return trainingMapper.mapToResponse(trainingRepository.save(training));
     }
@@ -31,13 +34,13 @@ public class TrainingService {
     }
 
     public TrainingResponse getTrainingById(Long id) {
-        Training training =  trainingRepository.findById(id).orElseThrow(() ->
-                        new RecordNotFoundException("No training found: " + id));
+        Training training = trainingRepository.findById(id).orElseThrow(() ->
+                new RecordNotFoundException("No training found: " + id));
         return trainingMapper.mapToResponse(training);
     }
 
     public boolean deleteTrainingById(Long id) {
-        if(trainingRepository.existsById(id)) {
+        if (trainingRepository.existsById(id)) {
             trainingRepository.deleteById(id);
             return true;
         }
