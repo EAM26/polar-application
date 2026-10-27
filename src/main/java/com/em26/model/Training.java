@@ -1,17 +1,14 @@
 package com.em26.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -27,12 +24,19 @@ public class Training {
     private String name;
 
     private String sportType;
-    private LocalTime startTime;
-    private LocalDate startDate;
+    private String startTime;
+    private String startDate;
+    private String totalDurationMeta;
+    private String totalDistanceMeta;
+    private String avgSpeedMeta;
+    private String caloriesMeta;
+    private String avgHeartRateMeta;
 
-    private Integer durationSeconds;
-    private Integer distanceMeters;
+    @CreationTimestamp
     private LocalDateTime createdAt;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "training")
+    private List<DataRow> dataRowList;
 
 
 

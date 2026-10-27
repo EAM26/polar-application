@@ -4,8 +4,10 @@ import com.em26.dto.TrainingResponse;
 import com.em26.service.TrainingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -16,9 +18,9 @@ public class TrainingController {
 
     private final TrainingService trainingService;
 
-    @PostMapping
-    public ResponseEntity<TrainingResponse> createTraining() {
-        return ResponseEntity.status(HttpStatus.CREATED).body(trainingService.createTraining());
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<TrainingResponse> createTraining(MultipartFile file) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(trainingService.createTraining(file));
     }
 
 //    @PostMapping("/fake")
@@ -36,12 +38,12 @@ public class TrainingController {
         return ResponseEntity.ok(trainingService.getTrainingById(id));
     }
 
+
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteTrainingById(@PathVariable Long id) {
         boolean isDeleted = trainingService.deleteTrainingById(id);
-        if(isDeleted) return ResponseEntity.ok("Training deleted");
+        if (isDeleted) return ResponseEntity.ok("Training deleted");
         return ResponseEntity.notFound().build();
     }
-
 
 }
