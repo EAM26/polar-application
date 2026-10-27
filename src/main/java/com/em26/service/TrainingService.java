@@ -25,6 +25,24 @@ public class TrainingService {
         return trainingMapper.mapToResponse(trainingRepository.save(training));
     }
 
+//    //        imports all the csv rows to one object
+//    List<String[]> csvRows = importService.importCsv(file);
+//
+//    //        creates a map for of first two rows (headers and values)
+//    Map<String, String> metaData = getMetaDataFromCsvRows(csvRows);
+//
+//    //        creates a training and sets meta fields
+//    Training training = trainingMapper.mapMetaDataToTraining(metaData);
+//
+////        reads row 2 till end  in one List of String[]
+////        maps the List to List<DataRow>
+////        sets TrainingId in Data row and save DataRow (flush & Transactional)
+//        training.setDataRows() = dataRowService.createDataRows(csvRows, training);
+//
+////        save and return training
+//        return trainingMapper.mapToResponse(trainingRepository.save(training));
+//}
+
 
     public List<TrainingResponse> getAllTrainings() {
         return trainingRepository.findAll()

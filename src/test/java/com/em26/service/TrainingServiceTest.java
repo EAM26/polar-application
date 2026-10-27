@@ -12,9 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -69,30 +67,32 @@ class TrainingServiceTest {
                 null,
                 null,
                 null,
+                null,
+                null,
                 createdAt
         );
 
-        trainingWithDataSaved = Training.builder()
-                .id(10L)
-                .name("RUNNING 2026-05-01 12:00:01")
-                .sportType("RUNNING")
-                .startTime(LocalTime.of(12, 0, 1))
-                .startDate(LocalDate.of(2026, 5, 1))
-                .distanceMeters(4205)
-                .durationSeconds(1200)
-                .createdAt(createdAt)
-                .build();
-
-        responseWithData = new TrainingResponse(
-                10L,
-                "RUNNING 2026-05-01 12:00:01",
-                "RUNNING",
-                LocalTime.of(12, 0, 1),
-                LocalDate.of(2026, 5, 1),
-                1200,
-                4205,
-                createdAt
-        );
+//        trainingWithDataSaved = Training.builder()
+//                .id(10L)
+//                .name("RUNNING 2026-05-01 12:00:01")
+//                .sportType("RUNNING")
+//                .startTime(LocalTime.of(12, 0, 1))
+//                .startDate(LocalDate.of(2026, 5, 1))
+//                .totalDistanceMeta(4205)
+//                .totalDurationMeta(1200)
+//                .createdAt(createdAt)
+//                .build();
+//
+//        responseWithData = new TrainingResponse(
+//                10L,
+//                "RUNNING 2026-05-01 12:00:01",
+//                "RUNNING",
+//                LocalTime.of(12, 0, 1),
+//                LocalDate.of(2026, 5, 1),
+//                1200,
+//                4205,
+//                createdAt
+//        );
     }
 
 //    @Test

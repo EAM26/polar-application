@@ -26,8 +26,10 @@ public class TrainingMapper {
                 training.getSportType(),
                 training.getStartTime(),
                 training.getStartDate(),
-                training.getDurationSeconds(),
-                training.getDistanceMeters(),
+                training.getTotalDurationMeta(),
+                training.getTotalDistanceMeta(),
+                training.getAvgSpeedMeta(),
+                training.getCaloriesMeta(),
                 training.getCreatedAt()
         );
     }

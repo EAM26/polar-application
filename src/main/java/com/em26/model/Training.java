@@ -9,9 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 @Entity
 @Data
@@ -27,11 +25,12 @@ public class Training {
     private String name;
 
     private String sportType;
-    private LocalTime startTime;
-    private LocalDate startDate;
-
-    private Integer durationSeconds;
-    private Integer distanceMeters;
+    private String startTime;
+    private String startDate;
+    private String totalDurationMeta;
+    private String totalDistanceMeta;
+    private String avgSpeedMeta;
+    private String caloriesMeta;
     private LocalDateTime createdAt;
 
 
