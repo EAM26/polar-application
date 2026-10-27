@@ -1,6 +1,7 @@
 package com.em26.controller;
 
 import com.em26.dto.TrainingResponse;
+import com.em26.service.CsvDataImportService;
 import com.em26.service.TrainingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import java.util.List;
 public class TrainingController {
 
     private final TrainingService trainingService;
+    private final CsvDataImportService importService;
 
     @PostMapping
     public ResponseEntity<TrainingResponse> createTraining() {
@@ -34,6 +36,12 @@ public class TrainingController {
     @GetMapping("/{id}")
     public ResponseEntity<TrainingResponse> getTrainingById(@PathVariable Long id) {
         return ResponseEntity.ok(trainingService.getTrainingById(id));
+    }
+
+    @GetMapping("/read-csv")
+    public String runCsvReader(@RequestBody String filePath) {
+        importService.importCsv(filePath);
+        return "Method finished";
     }
 
     @DeleteMapping("/{id}")
