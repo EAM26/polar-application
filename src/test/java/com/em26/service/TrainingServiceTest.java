@@ -69,7 +69,8 @@ class TrainingServiceTest {
                 null,
                 null,
                 null,
-                createdAt
+                null,
+                (createdAt)
         );
 
 //        trainingWithDataSaved = Training.builder()
