@@ -1,8 +1,11 @@
 package com.em26.service;
 
+import com.em26.exception.RecordNotFoundException;
 import com.em26.mapper.DataRowMapper;
 import com.em26.model.DataRow;
 import com.em26.model.Training;
+import com.em26.repository.TrainingRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class DataRowService {
 
     private final DataRowMapper mapper;
+    private final TrainingRepository trainingRepository;
 
     public List<DataRow> createDataRows(List<String[]> csvRows, Training training) {
         AtomicInteger indexSeconds = new AtomicInteger();
@@ -26,12 +30,23 @@ public class DataRowService {
                 .toList();
     }
 
-//    private List<DataRow> getTrainingsDataFromCsv(List<String[]> csvRows) {
-//        List<String[]> values = csvRows.stream()
-//                .skip(3)
-//                .toList();
-//
-//
-//
-//    }
+    @Transactional
+    public boolean deleteAllDataRowsOfTraining(Long trainingId) {
+        Training training = trainingRepository.findById(trainingId)
+                .orElseThrow(() ->
+                        new RecordNotFoundException(
+                                "Training not found: " + trainingId));
+
+        if (training.getDataRowList().isEmpty()) {
+            return false;
+        }
+
+        training.getDataRowList().forEach(dataRow -> dataRow.setTraining(null));
+
+        training.getDataRowList().clear();
+        return true;
+    }
+
+
+
 }
