@@ -38,6 +38,11 @@ public class Training {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "training")
     private List<DataRow> dataRowList;
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "training")
+    private List<Phase> phaseList;
+
+
+
 
 
 

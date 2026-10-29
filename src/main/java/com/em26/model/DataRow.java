@@ -21,6 +21,6 @@ public class DataRow {
     private Integer power;
 
     @ManyToOne
-    @JoinColumn(name = "training", nullable = false)
+    @JoinColumn(name = "trainingId", nullable = false)
     private Training training;
 }
