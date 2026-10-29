@@ -1,5 +1,6 @@
 package com.em26.service;
 
+import com.em26.dto.IntervalRequest;
 import com.em26.dto.PhaseRequest;
 import com.em26.dto.PhaseResponse;
 import com.em26.exception.RecordNotFoundException;
@@ -12,6 +13,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -52,8 +54,21 @@ public class PhaseService {
         phaseList.add(phase);
         return phase;
 
-
-
-
     }
+
+    @Transactional
+    public List<PhaseResponse> createInterval(Long trainingId, IntervalRequest request) {
+        List<PhaseResponse> interval = new ArrayList<>();
+        for (int i = 0; i < request.factor(); i++) {
+            for(PhaseRequest phaseRequest: request.interval()) {
+                interval.add(createPhase(trainingId, phaseRequest));
+            }
+        }
+        return interval;
+    }
+
+//    todo: create interval by looping through createPhase, (factor, {phases})
+
+
+//    todo: check if phase doesn't exceed training time with last datarow
 }
