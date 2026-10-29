@@ -10,9 +10,8 @@ public class DataRow {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private String timeLabel;
     private int indexSeconds;
+    private String timeLabel;
     private Integer heartRate;
     private Integer cadence;
     private Integer altitude;
