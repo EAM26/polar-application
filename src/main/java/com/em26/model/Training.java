@@ -48,4 +48,9 @@ public class Training {
         this.getPhaseList().add(phase);
         phase.setTraining(this);
     }
+
+    public void removePhase(Phase phase) {
+        phase.setTraining(null);
+        getPhaseList().remove(phase);
+    }
 }

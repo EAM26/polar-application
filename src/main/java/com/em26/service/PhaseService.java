@@ -21,6 +21,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class PhaseService {
 
     private final PhaseRepository phaseRepository;
@@ -29,7 +30,6 @@ public class PhaseService {
     private final StatisticsCalculator calculator;
 
 
-    @Transactional
     public PhaseResponse createPhase(Long trainingId, PhaseRequest request) {
         Training training = trainingRepository.findById(trainingId).orElseThrow(() ->
                 new RecordNotFoundException("training not found: " + trainingId));
@@ -109,6 +109,23 @@ public class PhaseService {
                 .toList();
     }
 
+    public void deleteLastPhase(Long trainingId) {
+        Training training = trainingRepository.findById(trainingId).orElseThrow(() ->
+                new RecordNotFoundException("Training not found: " + trainingId));
 
-//    todo: check if phase doesn't exceed training time with last datarow
+        Phase lastPhase = training.getPhaseList().getLast();
+        training.removePhase(lastPhase);
+
+    }
+
+    public void deleteAllPhases(Long trainingId) {
+        Training training = trainingRepository.findById(trainingId).orElseThrow(() ->
+                new RecordNotFoundException("Training not found: " + trainingId));
+
+        training.getPhaseList()
+                .forEach(phase -> phase.setTraining(null));
+
+        training.getPhaseList().clear();
+    }
+
 }
