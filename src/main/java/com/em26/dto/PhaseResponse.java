@@ -6,6 +6,7 @@ public record PhaseResponse(
         int duration,
         int startTime,
         int stopTime,
+        Double hrAvg,
         Long trainingId
 ) {
 }

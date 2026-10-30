@@ -20,7 +20,8 @@ public class Phase {
     private String name;
     private int duration;
     private int startTime;
-    private int endTime;
+    private int stopTime;
+    private Double hrAvg;
 
     @ManyToOne
     @JoinColumn(name = "trainingId", nullable = false)
