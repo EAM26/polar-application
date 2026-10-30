@@ -4,7 +4,7 @@ import com.em26.dto.IntervalRequest;
 import com.em26.dto.PhaseRequest;
 import com.em26.dto.PhaseResponse;
 import com.em26.exception.RecordNotFoundException;
-import com.em26.exception.TimeExceedingException;
+import com.em26.exception.TrainingDurationExceededException;
 import com.em26.mapper.PhaseMapper;
 import com.em26.model.DataRow;
 import com.em26.model.Phase;
@@ -82,9 +82,10 @@ public class PhaseService {
         int projectedRemainingTime = training.getDataRowList().getLast().getIndexSeconds() - currentStopTime - duration;
 
         if (projectedRemainingTime < 0) {
-            throw new TimeExceedingException("Remaining time: " +
-                    projectedRemainingTime + " seconds");
-
+            throw new TrainingDurationExceededException(
+                    "The requested duration exceeds the remaining training time by "
+                            + Math.abs(projectedRemainingTime) + " seconds."
+            );
         }
     }
 
@@ -107,7 +108,6 @@ public class PhaseService {
                 .map(phaseMapper::mapToResponse)
                 .toList();
     }
-
 
 
 //    todo: check if phase doesn't exceed training time with last datarow

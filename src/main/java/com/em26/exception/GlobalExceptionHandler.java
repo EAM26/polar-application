@@ -18,10 +18,10 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(TimeExceedingException.class)
-    public ProblemDetail handleTimeExceedingException(TimeExceedingException ex) {
+    @ExceptionHandler(TrainingDurationExceededException.class)
+    public ProblemDetail handleTimeExceedingException(TrainingDurationExceededException ex) {
         return ProblemDetail.forStatusAndDetail(
-                HttpStatus.NOT_FOUND,
+                HttpStatus.CONFLICT,
                 ex.getMessage()
         );
     }
