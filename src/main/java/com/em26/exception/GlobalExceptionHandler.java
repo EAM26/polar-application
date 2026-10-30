@@ -17,4 +17,12 @@ public class GlobalExceptionHandler {
                 ex.getMessage()
         );
     }
+
+    @ExceptionHandler(TrainingDurationExceededException.class)
+    public ProblemDetail handleTimeExceedingException(TrainingDurationExceededException ex) {
+        return ProblemDetail.forStatusAndDetail(
+                HttpStatus.CONFLICT,
+                ex.getMessage()
+        );
+    }
 }

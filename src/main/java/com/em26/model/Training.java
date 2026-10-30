@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -35,14 +36,16 @@ public class Training {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
+    @Builder.Default
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "training")
-    private List<DataRow> dataRowList;
+    private List<DataRow> dataRowList = new ArrayList<>();
 
+    @Builder.Default
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "training")
+    private List<Phase> phaseList = new ArrayList<>();
 
-
-
-
-
-
-
+    public void addPhase(Phase phase) {
+        this.getPhaseList().add(phase);
+        phase.setTraining(this);
+    }
 }
