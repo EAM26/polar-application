@@ -1,14 +1,20 @@
 package com.em26.mapper;
 
+import com.em26.dto.PhaseResponse;
 import com.em26.dto.TrainingResponse;
 import com.em26.model.Training;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 @Component
+@RequiredArgsConstructor
 public class TrainingMapper {
+
+    private final PhaseMapper phaseMapper;
 
     public Training mapToEntity() {
         LocalDateTime createdAt = LocalDateTime.now();
@@ -21,6 +27,9 @@ public class TrainingMapper {
     }
 
     public TrainingResponse mapToResponse(Training training) {
+        List<PhaseResponse> phases = training.getPhaseList().stream()
+                .map(phaseMapper::mapToResponse)
+                .toList();
         return new TrainingResponse(
                 training.getId(),
                 training.getName(),
@@ -32,7 +41,8 @@ public class TrainingMapper {
                 training.getAvgSpeedMeta(),
                 training.getCaloriesMeta(),
                 training.getAvgHeartRateMeta(),
-                training.getCreatedAt()
+                training.getCreatedAt(),
+                phases
         );
     }
 

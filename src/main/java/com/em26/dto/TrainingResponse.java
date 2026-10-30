@@ -1,6 +1,7 @@
 package com.em26.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public record TrainingResponse(
         Long id,
@@ -13,6 +14,7 @@ public record TrainingResponse(
         String avgSpeedMeta,
         String caloriesMeta,
         String avgHeartRateMeta,
-        LocalDateTime createdAt
+        LocalDateTime createdAt,
+        List<PhaseResponse> phases
 ) {
 }
