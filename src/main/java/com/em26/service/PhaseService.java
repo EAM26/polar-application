@@ -4,6 +4,7 @@ import com.em26.dto.IntervalRequest;
 import com.em26.dto.PhaseRequest;
 import com.em26.dto.PhaseResponse;
 import com.em26.exception.RecordNotFoundException;
+import com.em26.exception.TimeExceedingException;
 import com.em26.mapper.PhaseMapper;
 import com.em26.model.DataRow;
 import com.em26.model.Phase;
@@ -15,7 +16,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -34,15 +34,20 @@ public class PhaseService {
         Training training = trainingRepository.findById(trainingId).orElseThrow(() ->
                 new RecordNotFoundException("training not found: " + trainingId));
 
-        Phase phase = phaseMapper.mapToEntity(training, request);
+        validateRemainingTime(training, request.duration());
 
+        Phase phase = addSinglePhaseToList(training, request);
+        return phaseMapper.mapToResponse(phase);
+
+    }
+
+    private Phase addSinglePhaseToList(Training training, PhaseRequest request) {
+        Phase phase = phaseMapper.mapToEntity(training, request);
         assignPhaseTimeValues(phase, training.getPhaseList());
 
         phase.setHrAvg(calcHrAvg(training.getDataRowList(), phase));
-
-        phaseRepository.save(phase);
-
-        return phaseMapper.mapToResponse(phase);
+        training.addPhase(phase);
+        return phaseRepository.save(phase);
 
     }
 
@@ -66,30 +71,42 @@ public class PhaseService {
             phase.setStopTime(phase.getStartTime() + phase.getDuration() - 1);
         }
 
-//        validateStopTimeNotExceeding(phase);
-//
-        phaseList.add(phase);
-//        return phase;
 
     }
 
+    public void validateRemainingTime(Training training, int duration) {
+        int currentStopTime;
+        if (training.getPhaseList() == null || training.getPhaseList().isEmpty()) currentStopTime = -1;
+        else currentStopTime = training.getPhaseList().getLast().getStopTime();
 
+        int projectedRemainingTime = training.getDataRowList().getLast().getIndexSeconds() - currentStopTime - duration;
+
+        if (projectedRemainingTime < 0) {
+            throw new TimeExceedingException("Remaining time: " +
+                    projectedRemainingTime + " seconds");
+
+        }
+    }
 
     @Transactional
     public List<PhaseResponse> createInterval(Long trainingId, IntervalRequest request) {
-//        int totalDuration = request.interval().stream()
-//                .mapToInt(PhaseRequest::duration)
-//                .sum();
+        Training training = trainingRepository.findById(trainingId).orElseThrow(() ->
+                new RecordNotFoundException("training not found: " + trainingId));
 
-        List<PhaseResponse> interval = new ArrayList<>();
+        int totalDurationInterval = request.factor() * request.interval().stream()
+                .mapToInt(PhaseRequest::duration)
+                .sum();
+
+        validateRemainingTime(training, totalDurationInterval);
+
         for (int i = 0; i < request.factor(); i++) {
-            for (PhaseRequest phaseRequest : request.interval()) {
-                interval.add(createPhase(trainingId, phaseRequest));
-            }
+            request.interval().forEach(phaseRequest -> addSinglePhaseToList(training, phaseRequest));
         }
-        return interval;
-    }
 
+        return training.getPhaseList().stream()
+                .map(phaseMapper::mapToResponse)
+                .toList();
+    }
 
 
 

@@ -17,4 +17,12 @@ public class GlobalExceptionHandler {
                 ex.getMessage()
         );
     }
+
+    @ExceptionHandler(TimeExceedingException.class)
+    public ProblemDetail handleTimeExceedingException(TimeExceedingException ex) {
+        return ProblemDetail.forStatusAndDetail(
+                HttpStatus.NOT_FOUND,
+                ex.getMessage()
+        );
+    }
 }
