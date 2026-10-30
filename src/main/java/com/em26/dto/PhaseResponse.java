@@ -6,6 +6,7 @@ public record PhaseResponse(
         int duration,
         int startTime,
         int stopTime,
+//        todo: refactor hrAvg to general analysis entity with other Avg's
         Double hrAvg,
         Long trainingId
 ) {

@@ -29,4 +29,16 @@ public class PhaseController {
         return ResponseEntity.status(HttpStatus.CREATED).body(phaseService.createInterval(trainingId, request));
 
     }
+
+    @DeleteMapping("/trainings/{trainingId}/phases/delete-last")
+    public ResponseEntity<Void> deleteLastPhase(@PathVariable Long trainingId) {
+        phaseService.deleteLastPhase(trainingId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/trainings/{trainingId}/phases/delete-all")
+    public ResponseEntity<Void> deleteAllPhases(@PathVariable Long trainingId) {
+        phaseService.deleteAllPhases(trainingId);
+        return ResponseEntity.noContent().build();
+    }
 }

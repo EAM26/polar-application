@@ -16,6 +16,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class TrainingService {
     private final TrainingRepository trainingRepository;
     private final TrainingMapper trainingMapper;
@@ -23,7 +24,6 @@ public class TrainingService {
     private final DataRowService dataRowService;
 
 
-    @Transactional
     public TrainingResponse createTraining(MultipartFile file) {
 
         //        imports all the csv rows to one object
@@ -40,7 +40,6 @@ public class TrainingService {
 //        sets TrainingId in Data row and save DataRow (flush & Transactional)
         training.setDataRowList(dataRowService.createDataRows(csvRows, training));
 
-//        save and return training
         return trainingMapper.mapToResponse(trainingRepository.save(training));
     }
 
@@ -57,9 +56,6 @@ public class TrainingService {
             metaData.put(headers[i], values[i]);
         }
         return metaData;
-
-
-
     }
 
 
@@ -84,15 +80,4 @@ public class TrainingService {
         return false;
     }
 
-//    public TrainingResponse createFakeTraining() {
-//        Training training = trainingMapper.mapToEntity();
-//        training.setName("RUNNING: 2026-10-21 08:05:10");
-//        training.setSportType("RUNNING");
-//        training.setStartTime(LocalTime.of(8, 10, 20));
-//        training.setStartDate(LocalDate.of(2026, 10, 1));
-//        training.setDurationSeconds(3600);
-//        training.setDistanceMeters(10000);
-//
-//         return trainingMapper.mapToResponse(trainingRepository.save(training));
-//    }
 }

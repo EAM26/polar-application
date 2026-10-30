@@ -25,10 +25,6 @@ public class TrainingController {
         return ResponseEntity.status(HttpStatus.CREATED).body(trainingService.createTraining(file));
     }
 
-//    @PostMapping("/fake")
-//    public ResponseEntity<TrainingResponse> createFakeTraining() {
-//        return ResponseEntity.status(HttpStatus.CREATED).body(trainingService.createFakeTraining());
-//    }
 
     @GetMapping
     public ResponseEntity<List<TrainingResponse>> getAllTrainings() {
