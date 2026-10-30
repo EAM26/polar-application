@@ -22,6 +22,8 @@ public class Phase {
     private int startTime;
     private int stopTime;
     private Double hrAvg;
+    private Double cadenceAvg;
+
 
     @ManyToOne
     @JoinColumn(name = "trainingId", nullable = false)

@@ -25,6 +25,7 @@ public class PhaseMapper {
                 phase.getStartTime(),
                 phase.getStopTime(),
                 phase.getHrAvg(),
+                phase.getCadenceAvg(),
                 phase.getTraining().getId()
         );
     }

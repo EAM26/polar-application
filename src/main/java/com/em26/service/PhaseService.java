@@ -6,7 +6,6 @@ import com.em26.dto.PhaseResponse;
 import com.em26.exception.RecordNotFoundException;
 import com.em26.exception.TrainingDurationExceededException;
 import com.em26.mapper.PhaseMapper;
-import com.em26.model.DataRow;
 import com.em26.model.Phase;
 import com.em26.model.Training;
 import com.em26.repository.PhaseRepository;
@@ -28,6 +27,7 @@ public class PhaseService {
     private final TrainingRepository trainingRepository;
     private final PhaseMapper phaseMapper;
     private final StatisticsCalculator calculator;
+    private final AnalyzerService analyzer;
 
 
     public PhaseResponse createPhase(Long trainingId, PhaseRequest request) {
@@ -36,58 +36,13 @@ public class PhaseService {
 
         validateRemainingTime(training, request.duration());
 
-        Phase phase = addSinglePhaseToList(training, request);
+        Phase phase = handleSinglePhase(training, request);
+
         return phaseMapper.mapToResponse(phase);
 
     }
 
-    private Phase addSinglePhaseToList(Training training, PhaseRequest request) {
-        Phase phase = phaseMapper.mapToEntity(training, request);
-        assignPhaseTimeValues(phase, training.getPhaseList());
 
-        phase.setHrAvg(calcHrAvg(training.getDataRowList(), phase));
-        training.addPhase(phase);
-        return phaseRepository.save(phase);
-
-    }
-
-    private Double calcHrAvg(List<DataRow> dataRowList, Phase phase) {
-        List<Integer> hrColumn = dataRowList.stream()
-                .filter(dataRow -> dataRow.getIndexSeconds() >= phase.getStartTime() &&
-                        dataRow.getIndexSeconds() <= phase.getStopTime())
-                .map(DataRow::getHeartRate)
-                .toList();
-        return calculator.getDoubleAvgFromIntList(hrColumn);
-    }
-
-    private void assignPhaseTimeValues(Phase phase, List<Phase> phaseList) {
-        if (phaseList.isEmpty()) {
-            phase.setStartTime(0);
-            phase.setStopTime(phase.getDuration() - 1);
-
-        } else {
-            Phase lastPhase = phaseList.getLast();
-            phase.setStartTime(lastPhase.getStopTime() + 1);
-            phase.setStopTime(phase.getStartTime() + phase.getDuration() - 1);
-        }
-
-
-    }
-
-    public void validateRemainingTime(Training training, int duration) {
-        int currentStopTime;
-        if (training.getPhaseList() == null || training.getPhaseList().isEmpty()) currentStopTime = -1;
-        else currentStopTime = training.getPhaseList().getLast().getStopTime();
-
-        int projectedRemainingTime = training.getDataRowList().getLast().getIndexSeconds() - currentStopTime - duration;
-
-        if (projectedRemainingTime < 0) {
-            throw new TrainingDurationExceededException(
-                    "The requested duration exceeds the remaining training time by "
-                            + Math.abs(projectedRemainingTime) + " seconds."
-            );
-        }
-    }
 
     @Transactional
     public List<PhaseResponse> createInterval(Long trainingId, IntervalRequest request) {
@@ -101,7 +56,7 @@ public class PhaseService {
         validateRemainingTime(training, totalDurationInterval);
 
         for (int i = 0; i < request.factor(); i++) {
-            request.interval().forEach(phaseRequest -> addSinglePhaseToList(training, phaseRequest));
+            request.interval().forEach(phaseRequest -> handleSinglePhase(training, phaseRequest));
         }
 
         return training.getPhaseList().stream()
@@ -128,4 +83,58 @@ public class PhaseService {
         training.getPhaseList().clear();
     }
 
+    private Phase handleSinglePhase(Training training, PhaseRequest request) {
+        Phase phase = phaseMapper.mapToEntity(training, request);
+        assignPhaseTimeValues(phase, training.getPhaseList());
+
+        phase.setHrAvg(analyzer.getAvgHeartRAte(phase.getStartTime(),
+                phase.getStopTime(), training));
+        phase.setCadenceAvg(analyzer.getAvgCadence(phase.getStartTime(),
+                phase.getStopTime(), training));
+
+
+
+        training.addPhase(phase);
+        return phaseRepository.save(phase);
+
+    }
+
+//    private Double assignAverageHr(int startTime, int stopTime, Training training) {
+//        List<Integer> hrColumn = training.getDataRowList().stream()
+//                .filter(dataRow -> dataRow.getIndexSeconds() >= startTime &&
+//                        dataRow.getIndexSeconds() <= stopTime)
+//                .map(DataRow::getHeartRate)
+//                .toList();
+//        if(hrColumn.contains(null)) return null;
+//
+//        return calculator.getDoubleAvgFromIntList(hrColumn);
+//    }
+
+
+    private void assignPhaseTimeValues(Phase phase, List<Phase> phaseList) {
+        if (phaseList.isEmpty()) {
+            phase.setStartTime(0);
+            phase.setStopTime(phase.getDuration() - 1);
+
+        } else {
+            Phase lastPhase = phaseList.getLast();
+            phase.setStartTime(lastPhase.getStopTime() + 1);
+            phase.setStopTime(phase.getStartTime() + phase.getDuration() - 1);
+        }
+    }
+
+    private void validateRemainingTime(Training training, int duration) {
+        int currentStopTime;
+        if (training.getPhaseList() == null || training.getPhaseList().isEmpty()) currentStopTime = -1;
+        else currentStopTime = training.getPhaseList().getLast().getStopTime();
+
+        int projectedRemainingTime = training.getDataRowList().getLast().getIndexSeconds() - currentStopTime - duration;
+
+        if (projectedRemainingTime < 0) {
+            throw new TrainingDurationExceededException(
+                    "The requested duration exceeds the remaining training time by "
+                            + Math.abs(projectedRemainingTime) + " seconds."
+            );
+        }
+    }
 }
