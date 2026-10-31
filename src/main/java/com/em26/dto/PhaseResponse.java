@@ -8,6 +8,7 @@ public record PhaseResponse(
         int stopTime,
         Double hrAvg,
         Double cadenceAvg,
+        Double distance,
         Long trainingId
 ) {
 }

@@ -54,3 +54,5 @@ public class Training {
         getPhaseList().remove(phase);
     }
 }
+
+// Todo: add RPE (double?), Description (like Interval 4x5(2)) and notes (comments etc)

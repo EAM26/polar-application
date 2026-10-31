@@ -14,6 +14,5 @@ public class StatisticsCalculator {
             sum += value;
         }
         return (double) sum/column.size();
-
     }
 }

@@ -28,6 +28,7 @@ public class PhaseService {
     private final PhaseMapper phaseMapper;
     private final StatisticsCalculator calculator;
     private final AnalyzerService analyzer;
+    private final DataRowService dataRowService;
 
 
     public PhaseResponse createPhase(Long trainingId, PhaseRequest request) {
@@ -91,24 +92,14 @@ public class PhaseService {
                 phase.getStopTime(), training));
         phase.setCadenceAvg(analyzer.getAvgCadence(phase.getStartTime(),
                 phase.getStopTime(), training));
-
+        phase.setDistance(analyzer.getDistancePerPeriod(phase));
 
 
         training.addPhase(phase);
         return phaseRepository.save(phase);
-
     }
 
-//    private Double assignAverageHr(int startTime, int stopTime, Training training) {
-//        List<Integer> hrColumn = training.getDataRowList().stream()
-//                .filter(dataRow -> dataRow.getIndexSeconds() >= startTime &&
-//                        dataRow.getIndexSeconds() <= stopTime)
-//                .map(DataRow::getHeartRate)
-//                .toList();
-//        if(hrColumn.contains(null)) return null;
-//
-//        return calculator.getDoubleAvgFromIntList(hrColumn);
-//    }
+
 
 
     private void assignPhaseTimeValues(Phase phase, List<Phase> phaseList) {

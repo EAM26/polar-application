@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
@@ -45,6 +46,12 @@ public class DataRowService {
 
         training.getDataRowList().clear();
         return true;
+    }
+
+    public Optional<DataRow> getDataRowByTime(int time, Training training) {
+        return training.getDataRowList().stream()
+                .filter(dataRow -> dataRow.getIndexSeconds() == time)
+                .findFirst();
     }
 
 

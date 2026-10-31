@@ -1,18 +1,21 @@
 package com.em26.service;
 
 import com.em26.model.DataRow;
+import com.em26.model.Phase;
 import com.em26.model.Training;
 import com.em26.util.StatisticsCalculator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class AnalyzerService {
 
     private final StatisticsCalculator calculator;
+    private final DataRowService dataRowService;
 
     public Double getAvgHeartRAte(int startTime, int stopTime, Training training) {
         List<Integer> hrColumn = training.getDataRowList().stream()
@@ -34,5 +37,15 @@ public class AnalyzerService {
         if(cadenceColumn.contains(null)) return null;
 
         return calculator.getDoubleAvgFromIntList(cadenceColumn);
+    }
+
+    public Double getDistancePerPeriod(Phase phase) {
+        Optional<DataRow> start = dataRowService.getDataRowByTime(phase.getStartTime(), phase.getTraining());
+        Optional<DataRow> stop = dataRowService.getDataRowByTime(phase.getStopTime(), phase.getTraining());
+
+        if(stop.isPresent() && start.isPresent() &&
+                start.get().getDistance() != null && stop.get().getDistance() != null)
+            return stop.get().getDistance() - start.get().getDistance();
+        return null;
     }
 }

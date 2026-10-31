@@ -24,6 +24,8 @@ public class Phase {
     private Double hrAvg;
     private Double cadenceAvg;
 
+    private Double distance;
+
 
     @ManyToOne
     @JoinColumn(name = "trainingId", nullable = false)
