@@ -23,6 +23,9 @@ public class Phase {
     private int stopTime;
     private Double hrAvg;
     private Double cadenceAvg;
+    private Double powerAvg;
+    private Double speedAvg;
+    private Double paceAvg;
 
     private Double distance;
 

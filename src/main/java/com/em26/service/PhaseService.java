@@ -10,7 +10,6 @@ import com.em26.model.Phase;
 import com.em26.model.Training;
 import com.em26.repository.PhaseRepository;
 import com.em26.repository.TrainingRepository;
-import com.em26.util.StatisticsCalculator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,9 +25,7 @@ public class PhaseService {
     private final PhaseRepository phaseRepository;
     private final TrainingRepository trainingRepository;
     private final PhaseMapper phaseMapper;
-    private final StatisticsCalculator calculator;
     private final AnalyzerService analyzer;
-    private final DataRowService dataRowService;
 
 
     public PhaseResponse createPhase(Long trainingId, PhaseRequest request) {
@@ -40,9 +37,7 @@ public class PhaseService {
         Phase phase = handleSinglePhase(training, request);
 
         return phaseMapper.mapToResponse(phase);
-
     }
-
 
 
     @Transactional
@@ -92,14 +87,17 @@ public class PhaseService {
                 phase.getStopTime(), training));
         phase.setCadenceAvg(analyzer.getAvgCadence(phase.getStartTime(),
                 phase.getStopTime(), training));
+        phase.setPowerAvg(analyzer.getAvgPower(phase.getStartTime(),
+                phase.getStopTime(), training));
+
         phase.setDistance(analyzer.getDistancePerPeriod(phase));
+        phase.setSpeedAvg(phase.getDistance() / phase.getDuration() * 3.6);
+        phase.setPaceAvg(60/phase.getSpeedAvg());
 
 
         training.addPhase(phase);
         return phaseRepository.save(phase);
     }
-
-
 
 
     private void assignPhaseTimeValues(Phase phase, List<Phase> phaseList) {

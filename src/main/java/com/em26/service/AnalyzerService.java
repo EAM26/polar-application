@@ -39,6 +39,17 @@ public class AnalyzerService {
         return calculator.getDoubleAvgFromIntList(cadenceColumn);
     }
 
+    public Double getAvgPower(int startTime, int stopTime, Training training) {
+        List<Integer> cadenceColumn = training.getDataRowList().stream()
+                .filter(dataRow -> dataRow.getIndexSeconds() >= startTime &&
+                        dataRow.getIndexSeconds() <= stopTime)
+                .map(DataRow::getPower)
+                .toList();
+        if(cadenceColumn.contains(null)) return null;
+
+        return calculator.getDoubleAvgFromIntList(cadenceColumn);
+    }
+
     public Double getDistancePerPeriod(Phase phase) {
         Optional<DataRow> start = dataRowService.getDataRowByTime(phase.getStartTime(), phase.getTraining());
         Optional<DataRow> stop = dataRowService.getDataRowByTime(phase.getStopTime(), phase.getTraining());
@@ -48,4 +59,6 @@ public class AnalyzerService {
             return stop.get().getDistance() - start.get().getDistance();
         return null;
     }
+
+
 }
