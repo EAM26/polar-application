@@ -41,11 +41,13 @@ public class Training {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @Builder.Default
+    @Builder.Default // note : Uses an empty list if none is supplied to the builder
+    @OrderBy("indexSeconds ASC") // note: Sorts by indexSeconds when loaded from the database
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "training")
     private List<DataRow> dataRowList = new ArrayList<>();
 
     @Builder.Default
+    @OrderBy("startTime ASC")
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "training")
     private List<Phase> phaseList = new ArrayList<>();
 

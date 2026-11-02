@@ -6,6 +6,7 @@ import com.em26.dto.PhaseResponse;
 import com.em26.exception.RecordNotFoundException;
 import com.em26.exception.TrainingDurationExceededException;
 import com.em26.mapper.PhaseMapper;
+import com.em26.model.ElevationSummary;
 import com.em26.model.Phase;
 import com.em26.model.Training;
 import com.em26.repository.PhaseRepository;
@@ -100,6 +101,9 @@ public class PhaseService {
         phase.setHrMax(analyzer.getMaximalHrForPeriod(phase.getStartTime(), phase.getStopTime(), training));
         phase.setHrMin(analyzer.getMinimalHrForPeriod(phase.getStartTime(), phase.getStopTime(), training));
 
+        ElevationSummary elevationSummary = analyzer.getElevation(phase.getStartTime(), phase.getStopTime(), training);
+        phase.setAscent(elevationSummary.getAscent());
+        phase.setDescent(elevationSummary.getDescent());
 
         training.addPhase(phase);
         return phaseRepository.save(phase);

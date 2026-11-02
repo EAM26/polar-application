@@ -1,6 +1,7 @@
 package com.em26.service;
 
 import com.em26.model.DataRow;
+import com.em26.model.ElevationSummary;
 import com.em26.model.Training;
 import com.em26.util.StatisticsCalculator;
 import lombok.RequiredArgsConstructor;
@@ -78,6 +79,15 @@ public class AnalyzerService {
                 .map(DataRow::getHeartRate)
                 .toList();
         return calculator.getMinValueFromList(hrColumn);
+    }
+
+    public ElevationSummary getElevation(int startTime, int stopTime, Training training) {
+        List<Integer> altitudeColumn = training.getDataRowList().stream()
+                .filter(dataRow -> dataRow.getIndexSeconds() >= startTime && dataRow.getIndexSeconds() <= stopTime)
+                .map(DataRow::getAltitude)
+                .toList();
+        return calculator.calculateTotalIncreaseAndDecrease(altitudeColumn);
+
     }
 
 

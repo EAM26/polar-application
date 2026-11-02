@@ -31,6 +31,8 @@ public class Phase {
     private Integer stopHr;
     private Integer hrMax;
     private Integer hrMin;
+    private Integer ascent;
+    private Integer descent;
 
 
     @ManyToOne
