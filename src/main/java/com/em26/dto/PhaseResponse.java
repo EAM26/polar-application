@@ -9,9 +9,11 @@ public record PhaseResponse(
         Double hrAvg,
         Double cadenceAvg,
         Double powerAvg,
-        Double distance,
         Double speedAvg,
         Double paceAvg,
+        Double distance,
+        Integer startHr,
+        Integer stopHr,
         Long trainingId
 ) {
 }

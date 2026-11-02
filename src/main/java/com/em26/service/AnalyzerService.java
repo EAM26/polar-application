@@ -1,7 +1,6 @@
 package com.em26.service;
 
 import com.em26.model.DataRow;
-import com.em26.model.Phase;
 import com.em26.model.Training;
 import com.em26.util.StatisticsCalculator;
 import lombok.RequiredArgsConstructor;
@@ -50,14 +49,19 @@ public class AnalyzerService {
         return calculator.getDoubleAvgFromIntList(cadenceColumn);
     }
 
-    public Double getDistancePerPeriod(Phase phase) {
-        Optional<DataRow> start = dataRowService.getDataRowByTime(phase.getStartTime(), phase.getTraining());
-        Optional<DataRow> stop = dataRowService.getDataRowByTime(phase.getStopTime(), phase.getTraining());
+    public Double getDistancePerPeriod(int startTime, int stopTime,  Training training) {
+        Optional<DataRow> start = dataRowService.getDataRowByTime(startTime, training);
+        Optional<DataRow> stop = dataRowService.getDataRowByTime(stopTime, training);
 
         if(stop.isPresent() && start.isPresent() &&
                 start.get().getDistance() != null && stop.get().getDistance() != null)
             return stop.get().getDistance() - start.get().getDistance();
         return null;
+    }
+
+    public Integer getHeartRateByTime(int time, Training training) {
+        Optional<DataRow> dataRowOptional = dataRowService.getDataRowByTime(time, training);
+        return dataRowOptional.map(DataRow::getHeartRate).orElse(null);
     }
 
 

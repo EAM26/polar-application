@@ -90,9 +90,13 @@ public class PhaseService {
         phase.setPowerAvg(analyzer.getAvgPower(phase.getStartTime(),
                 phase.getStopTime(), training));
 
-        phase.setDistance(analyzer.getDistancePerPeriod(phase));
+//        phase.setDistance(analyzer.getDistancePerPeriod(phase));
+        phase.setDistance(analyzer.getDistancePerPeriod(phase.getStartTime(), phase.getStopTime(), training));
         phase.setSpeedAvg(phase.getDistance() / phase.getDuration() * 3.6);
         phase.setPaceAvg(60/phase.getSpeedAvg());
+
+        phase.setStartHr(analyzer.getHeartRateByTime(phase.getStartTime(), training));
+        phase.setStopHr(analyzer.getHeartRateByTime(phase.getStopTime(), training));
 
 
         training.addPhase(phase);

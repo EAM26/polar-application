@@ -27,9 +27,11 @@ public class PhaseMapper {
                 phase.getHrAvg(),
                 phase.getCadenceAvg(),
                 phase.getPowerAvg(),
-                phase.getDistance(),
                 phase.getSpeedAvg(),
                 phase.getPaceAvg(),
+                phase.getDistance(),
+                phase.getStartHr(),
+                phase.getStopHr(),
                 phase.getTraining().getId()
         );
     }

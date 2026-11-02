@@ -26,8 +26,9 @@ public class Phase {
     private Double powerAvg;
     private Double speedAvg;
     private Double paceAvg;
-
     private Double distance;
+    private Integer startHr;
+    private Integer stopHr;
 
 
     @ManyToOne
