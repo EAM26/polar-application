@@ -29,6 +29,8 @@ public class Phase {
     private Double distance;
     private Integer startHr;
     private Integer stopHr;
+    private Integer hrMax;
+    private Integer hrMin;
 
 
     @ManyToOne

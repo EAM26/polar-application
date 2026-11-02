@@ -64,5 +64,21 @@ public class AnalyzerService {
         return dataRowOptional.map(DataRow::getHeartRate).orElse(null);
     }
 
+    public Integer getMaximalHrForPeriod(int startTime, int stopTime, Training training) {
+        List<Integer> hrColumn = training.getDataRowList().stream()
+                .filter(dataRow -> dataRow.getIndexSeconds() >= startTime && dataRow.getIndexSeconds() <= stopTime)
+                .map(DataRow::getHeartRate)
+                .toList();
+        return calculator.getMaxValueFromList(hrColumn);
+    }
+
+    public Integer getMinimalHrForPeriod(int startTime, int stopTime, Training training) {
+        List<Integer> hrColumn = training.getDataRowList().stream()
+                .filter(dataRow -> dataRow.getIndexSeconds() >= startTime && dataRow.getIndexSeconds() <= stopTime)
+                .map(DataRow::getHeartRate)
+                .toList();
+        return calculator.getMinValueFromList(hrColumn);
+    }
+
 
 }

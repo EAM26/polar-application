@@ -14,6 +14,8 @@ public record PhaseResponse(
         Double distance,
         Integer startHr,
         Integer stopHr,
+        Integer hrMax,
+        Integer hrMin,
         Long trainingId
 ) {
 }

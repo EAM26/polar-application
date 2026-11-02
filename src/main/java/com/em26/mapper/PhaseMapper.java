@@ -32,6 +32,8 @@ public class PhaseMapper {
                 phase.getDistance(),
                 phase.getStartHr(),
                 phase.getStopHr(),
+                phase.getHrMax(),
+                phase.getHrMin(),
                 phase.getTraining().getId()
         );
     }

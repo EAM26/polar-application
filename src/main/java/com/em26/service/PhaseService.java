@@ -97,6 +97,8 @@ public class PhaseService {
 
         phase.setStartHr(analyzer.getHeartRateByTime(phase.getStartTime(), training));
         phase.setStopHr(analyzer.getHeartRateByTime(phase.getStopTime(), training));
+        phase.setHrMax(analyzer.getMaximalHrForPeriod(phase.getStartTime(), phase.getStopTime(), training));
+        phase.setHrMin(analyzer.getMinimalHrForPeriod(phase.getStartTime(), phase.getStopTime(), training));
 
 
         training.addPhase(phase);
