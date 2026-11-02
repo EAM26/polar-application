@@ -14,6 +14,9 @@ public record TrainingResponse(
         String avgSpeedMeta,
         String caloriesMeta,
         String avgHeartRateMeta,
+        String workoutDescription,
+        String rpe,
+        String comment,
         LocalDateTime createdAt,
         List<PhaseResponse> phases
 ) {

@@ -22,8 +22,8 @@ public class Training {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+//    meta
     private String name;
-
     private String sportType;
     private String startTime;
     private String startDate;
@@ -32,6 +32,11 @@ public class Training {
     private String avgSpeedMeta;
     private String caloriesMeta;
     private String avgHeartRateMeta;
+
+    private String workoutDescription;
+    private String rpe;
+    private String comment;
+
 
     @CreationTimestamp
     private LocalDateTime createdAt;

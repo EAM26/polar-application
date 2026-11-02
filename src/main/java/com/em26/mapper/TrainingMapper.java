@@ -1,12 +1,12 @@
 package com.em26.mapper;
 
 import com.em26.dto.PhaseResponse;
+import com.em26.dto.TrainingRequest;
 import com.em26.dto.TrainingResponse;
 import com.em26.model.Training;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -16,12 +16,11 @@ public class TrainingMapper {
 
     private final PhaseMapper phaseMapper;
 
-    public Training mapToEntity() {
-        LocalDateTime createdAt = LocalDateTime.now();
+    public Training mapToEntity(TrainingRequest request) {
         return Training.builder()
-                .name(("Empty training " +  createdAt))
-//                .name(checkName(request, createdAt))
-                .createdAt(createdAt)
+                .workoutDescription(request.workoutDescription())
+                .rpe(request.rpe())
+                .comment(request.comment())
                 .build();
 
     }
@@ -41,13 +40,16 @@ public class TrainingMapper {
                 training.getAvgSpeedMeta(),
                 training.getCaloriesMeta(),
                 training.getAvgHeartRateMeta(),
+                training.getWorkoutDescription(),
+                training.getRpe(),
+                training.getComment(),
                 training.getCreatedAt(),
+
                 phases
         );
     }
 
-    public Training mapMetaDataToTraining(Map<String, String> metaData) {
-        Training training = new Training();
+    public Training setMetaDataToTraining(Training training, Map<String, String> metaData) {
         training.setName(metaData.get("Sport") + ": " + metaData.get("Date") + " " + metaData.get("Start time"));
         training.setSportType(metaData.get("Sport"));
         training.setStartTime(metaData.get("Start time"));

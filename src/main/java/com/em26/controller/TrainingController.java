@@ -1,5 +1,6 @@
 package com.em26.controller;
 
+import com.em26.dto.TrainingRequest;
 import com.em26.dto.TrainingResponse;
 import com.em26.service.DataRowService;
 import com.em26.service.TrainingService;
@@ -21,8 +22,8 @@ public class TrainingController {
     private final DataRowService dataRowService;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<TrainingResponse> createTraining(MultipartFile file) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(trainingService.createTraining(file));
+    public ResponseEntity<TrainingResponse> createTraining(@RequestPart("request") TrainingRequest request, @RequestPart("file") MultipartFile file) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(trainingService.createTraining(request, file));
     }
 
 
