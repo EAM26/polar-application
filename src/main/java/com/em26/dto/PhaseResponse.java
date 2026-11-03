@@ -4,6 +4,7 @@ public record PhaseResponse(
         Long id,
         String name,
         int duration,
+        int sequenceNumber,
         int startTime,
         int stopTime,
         Double hrAvg,

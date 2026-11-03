@@ -47,7 +47,7 @@ public class Training {
     private List<DataRow> dataRowList = new ArrayList<>();
 
     @Builder.Default
-    @OrderBy("startTime ASC")
+    @OrderBy("sequenceNumber ASC")
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "training")
     private List<Phase> phaseList = new ArrayList<>();
 

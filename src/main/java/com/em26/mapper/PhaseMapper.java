@@ -22,6 +22,7 @@ public class PhaseMapper {
                 phase.getId(),
                 phase.getName(),
                 phase.getDuration(),
+                phase.getSequenceNumber(),
                 phase.getStartTime(),
                 phase.getStopTime(),
                 phase.getHrAvg(),

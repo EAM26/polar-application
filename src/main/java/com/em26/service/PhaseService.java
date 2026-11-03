@@ -67,7 +67,6 @@ public class PhaseService {
 
         Phase lastPhase = training.getPhaseList().getLast();
         training.removePhase(lastPhase);
-
     }
 
     public void deleteAllPhases(Long trainingId) {
@@ -82,6 +81,8 @@ public class PhaseService {
 
     private Phase handleSinglePhase(Training training, PhaseRequest request) {
         Phase phase = phaseMapper.mapToEntity(training, request);
+
+        phase.setSequenceNumber(calculateSequenceNumber(phase, training.getPhaseList()));
         assignPhaseTimeValues(phase, training.getPhaseList());
 
         phase.setHrAvg(analyzer.getAvgHeartRAte(phase.getStartTime(),
@@ -91,7 +92,6 @@ public class PhaseService {
         phase.setPowerAvg(analyzer.getAvgPower(phase.getStartTime(),
                 phase.getStopTime(), training));
 
-//        phase.setDistance(analyzer.getDistancePerPeriod(phase));
         phase.setDistance(analyzer.getDistancePerPeriod(phase.getStartTime(), phase.getStopTime(), training));
         phase.setSpeedAvg(phase.getDistance() / phase.getDuration() * 3.6);
         phase.setPaceAvg(60/phase.getSpeedAvg());
@@ -120,6 +120,12 @@ public class PhaseService {
             phase.setStartTime(lastPhase.getStopTime() + 1);
             phase.setStopTime(phase.getStartTime() + phase.getDuration() - 1);
         }
+    }
+
+    private int calculateSequenceNumber(Phase phase, List<Phase> phaseList) {
+        if(phaseList.isEmpty()) return 0;
+        return phaseList.getLast().getSequenceNumber() + 1;
+
     }
 
     private void validateRemainingTime(Training training, int duration) {

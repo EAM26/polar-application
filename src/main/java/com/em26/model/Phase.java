@@ -19,6 +19,7 @@ public class Phase {
 
     private String name;
     private int duration;
+    private int sequenceNumber;
     private int startTime;
     private int stopTime;
     private Double hrAvg;
