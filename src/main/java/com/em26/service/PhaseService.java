@@ -82,7 +82,7 @@ public class PhaseService {
     private Phase handleSinglePhase(Training training, PhaseRequest request) {
         Phase phase = phaseMapper.mapToEntity(training, request);
 
-        phase.setSequenceNumber(calculateSequenceNumber(phase, training.getPhaseList()));
+        phase.setSequenceNumber(calculateSequenceNumber(training.getPhaseList()));
         assignPhaseTimeValues(phase, training.getPhaseList());
 
         phase.setHrAvg(analyzer.getAvgHeartRAte(phase.getStartTime(),
@@ -122,7 +122,7 @@ public class PhaseService {
         }
     }
 
-    private int calculateSequenceNumber(Phase phase, List<Phase> phaseList) {
+    private int calculateSequenceNumber(List<Phase> phaseList) {
         if(phaseList.isEmpty()) return 0;
         return phaseList.getLast().getSequenceNumber() + 1;
 
