@@ -19,9 +19,22 @@ public class Phase {
 
     private String name;
     private int duration;
+    private int sequenceNumber;
     private int startTime;
     private int stopTime;
     private Double hrAvg;
+    private Double cadenceAvg;
+    private Double powerAvg;
+    private Double speedAvg;
+    private Double paceAvg;
+    private Double distance;
+    private Integer startHr;
+    private Integer stopHr;
+    private Integer hrMax;
+    private Integer hrMin;
+    private Integer ascent;
+    private Integer descent;
+
 
     @ManyToOne
     @JoinColumn(name = "trainingId", nullable = false)

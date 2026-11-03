@@ -1,5 +1,6 @@
 package com.em26.service;
 
+import com.em26.dto.TrainingRequest;
 import com.em26.dto.TrainingResponse;
 import com.em26.exception.RecordNotFoundException;
 import com.em26.mapper.TrainingMapper;
@@ -24,7 +25,8 @@ public class TrainingService {
     private final DataRowService dataRowService;
 
 
-    public TrainingResponse createTraining(MultipartFile file) {
+    public TrainingResponse createTraining(TrainingRequest request, MultipartFile file) {
+        Training training = trainingMapper.mapToEntity(request);
 
         //        imports all the csv rows to one object
         List<String[]> csvRows = importService.importCsv(file);
@@ -33,7 +35,7 @@ public class TrainingService {
         Map<String, String> metaData = getMetaDataFromCsvRows(csvRows);
 
         //        creates a training and sets meta fields
-        Training training = trainingMapper.mapMetaDataToTraining(metaData);
+        training = trainingMapper.setMetaDataToTraining(training, metaData);
 
 //        reads row 2 till end  in one List of String[]
 //        maps the List to List<DataRow>

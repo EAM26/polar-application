@@ -22,8 +22,8 @@ public class Training {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+//    meta
     private String name;
-
     private String sportType;
     private String startTime;
     private String startDate;
@@ -33,14 +33,21 @@ public class Training {
     private String caloriesMeta;
     private String avgHeartRateMeta;
 
+    private String workoutDescription;
+    private String rpe;
+    private String comment;
+
+
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @Builder.Default
+    @Builder.Default // note : Uses an empty list if none is supplied to the builder
+    @OrderBy("indexSeconds ASC") // note: Sorts by indexSeconds when loaded from the database
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "training")
     private List<DataRow> dataRowList = new ArrayList<>();
 
     @Builder.Default
+    @OrderBy("sequenceNumber ASC")
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "training")
     private List<Phase> phaseList = new ArrayList<>();
 
@@ -54,3 +61,5 @@ public class Training {
         getPhaseList().remove(phase);
     }
 }
+
+// Todo: add RPE (double?), Description (like Interval 4x5(2)) and notes (comments etc)
