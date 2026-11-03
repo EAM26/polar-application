@@ -51,6 +51,8 @@ public class Training {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "training")
     private List<Phase> phaseList = new ArrayList<>();
 
+//    private List<AnalysisBlock> analysisBlocks = new ArrayList<>();
+
     public void addPhase(Phase phase) {
         this.getPhaseList().add(phase);
         phase.setTraining(this);
