@@ -82,3 +82,56 @@
 - **Initial statistics:** Calculated average heart rate over each phase's time range using a reusable statistics helper. Returned `null` when the selected measurements were empty or contained a missing heart-rate value.
 - **Transactional processing:** Used transactions to keep lazy-loaded relationships available and ensure interval creation is rolled back if an operation fails.
 - **Duration error handling:** Added `TrainingDurationExceededException` and an HTTP 409 ProblemDetail response that reports the number of seconds by which the requested duration exceeds the available time.
+
+
+## Step 9
+
+### Phase Deletion and Ordering
+
+- **Phase deletion:** Added endpoints to delete the last phase or all phases belonging to a training.
+- **Relationship consistency:** Added `Training.removePhase()` and synchronized both sides of the relationship when removing phases. Used transactional orphan removal to delete the database records.
+- **Training response:** Included phase responses in `TrainingResponse`.
+- **Sequence numbering:** Assigned sequential `sequenceNumber` values to phases, starting at zero.
+- **Collection ordering:** Added `@OrderBy` to load measurements by `indexSeconds` and phases by `sequenceNumber`.
+- **Collection initialization:** Added `@Builder.Default` so that training collections are initialized as empty lists when using the builder.
+
+## Step 10
+
+### Reusable Analysis and Extended Phase Statistics
+
+- **Analysis service:** Extracted measurement selection and analysis into `AnalyzerService`, using a training and an inclusive start and stop time.
+- **Statistics calculator:** Kept reusable calculations in `StatisticsCalculator`, including averages, minimum and maximum values, and total increases and decreases.
+- **Average measurements:** Added average cadence and power alongside average heart rate.
+- **Distance and pace:** Added time-based measurement lookup through `DataRowService`. Calculated distance from cumulative measurements and derived average speed and pace.
+- **Heart-rate details:** Added minimum, maximum, start and stop heart rate for each phase.
+- **Elevation:** Added `ElevationSummary` to hold ascent and descent, calculated by comparing consecutive altitude measurements.
+- **Missing averages:** Returned `null` for averages when the selected measurement list is empty or contains a missing value.
+
+## Step 11
+
+### Additional Training Information
+
+- **Training context:** Added `workoutDescription`, `rpe` and `comment` to record the intended workout, perceived effort and personal observations.
+- **Request mapping:** Added `TrainingRequest` and updated the mapper to include the additional training fields.
+- **Multipart request:** Updated training creation to accept both a JSON request part and a CSV file in one multipart request.
+
+## Step 12
+
+### Detailed Analysis Blocks
+
+- **Analysis model:** Added `AnalysisBlock` as a model that is generated on request without being stored as a database entity.
+- **Block service:** Added `AnalysisBlockService` to divide existing phases into blocks using a configurable duration.
+- **Remaining duration:** Added a shorter final block when a phase's duration is not divisible by the requested block duration.
+- **Block context:** Included a sequence number, phase ID, phase description, duration and inclusive start and stop times.
+- **Shared calculations:** Reused `AnalyzerService` and `StatisticsCalculator` to calculate the same measurements for detail blocks as for complete phases.
+- **Analysis scope:** Required at least one phase and limited detailed analysis to the defined phases, leaving any remaining training time outside the analysis.
+
+## Step 13
+
+### Combined Training Analysis Report
+
+- **Report response:** Added a `TrainingAnalysisResponse` record containing training metadata, personal training information and the generated analysis blocks.
+- **Report mapping:** Added `AnalysisMapper` to assemble the combined response.
+- **Analysis endpoint:** Added an endpoint in `TrainingController` that accepts a training ID and block duration and returns the report as JSON.
+- **Metadata distinction:** Kept the original CSV totals separate from the calculated block measurements. The metadata describes the full recording, while the blocks cover the defined phases.
+- **Manual verification:** Generated and inspected a report for an imported running workout, including minute-by-minute measurements and the associated phase descriptions.
