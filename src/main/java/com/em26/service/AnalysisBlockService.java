@@ -1,6 +1,8 @@
 package com.em26.service;
 
+import com.em26.dto.TrainingAnalysisResponse;
 import com.em26.exception.RecordNotFoundException;
+import com.em26.mapper.AnalysisMapper;
 import com.em26.model.AnalysisBlock;
 import com.em26.model.ElevationSummary;
 import com.em26.model.Phase;
@@ -20,16 +22,19 @@ public class AnalysisBlockService {
 
     private final TrainingRepository trainingRepository;
     private final AnalyzerService analyzer;
+    private final AnalysisMapper analysisMapper;
 
     @Transactional
-    public List<AnalysisBlock> createAnalysis(Long trainingId, int blockDuration) {
+    public TrainingAnalysisResponse createAnalysis(Long trainingId, int blockDuration) {
         Training training = trainingRepository.findById(trainingId).orElseThrow(() ->
                 new RecordNotFoundException("No training found: " + trainingId));
 
 //       todo: refactor to custom exception
         if (training.getPhaseList().isEmpty()) throw new RuntimeException("Minimum of 1 phase is required.");
 
-        return calculateBlocks(blockDuration, training.getPhaseList());
+        List<AnalysisBlock> blocks =  calculateBlocks(blockDuration, training.getPhaseList());
+
+        return analysisMapper.mapToResponse(training, blocks);
     }
 
     private List<AnalysisBlock> calculateBlocks(int blockDuration, List<Phase> phaseList) {

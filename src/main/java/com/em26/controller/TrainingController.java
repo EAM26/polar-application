@@ -1,8 +1,8 @@
 package com.em26.controller;
 
+import com.em26.dto.TrainingAnalysisResponse;
 import com.em26.dto.TrainingRequest;
 import com.em26.dto.TrainingResponse;
-import com.em26.model.AnalysisBlock;
 import com.em26.service.AnalysisBlockService;
 import com.em26.service.DataRowService;
 import com.em26.service.TrainingService;
@@ -58,9 +58,9 @@ public class TrainingController {
     }
 
     @PostMapping("/{id}/analysis")
-    public List<AnalysisBlock> createAnalysis(@PathVariable Long id , @RequestParam int blockDuration) {
-
-        return analysisBlockService.createAnalysis(id, blockDuration);
+    public ResponseEntity<TrainingAnalysisResponse> createAnalysis(@PathVariable Long id , @RequestParam int blockDuration) {
+        return ResponseEntity.ok(analysisBlockService.createAnalysis(id, blockDuration));
+//        return analysisBlockService.createAnalysis(id, blockDuration);
     }
 
 }
