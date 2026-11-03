@@ -1,4 +1,4 @@
-package com.em26.parser;
+package com.em26.util;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;

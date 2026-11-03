@@ -84,8 +84,14 @@ public class PhaseService {
 
         phase.setSequenceNumber(calculateSequenceNumber(training.getPhaseList()));
         assignPhaseTimeValues(phase, training.getPhaseList());
+        assignAnalysisValues(phase, training);
 
-        phase.setHrAvg(analyzer.getAvgHeartRAte(phase.getStartTime(),
+        training.addPhase(phase);
+        return phaseRepository.save(phase);
+    }
+
+    private void assignAnalysisValues(Phase phase, Training training) {
+        phase.setHrAvg(analyzer.getAvgHeartRate(phase.getStartTime(),
                 phase.getStopTime(), training));
         phase.setCadenceAvg(analyzer.getAvgCadence(phase.getStartTime(),
                 phase.getStopTime(), training));
@@ -104,9 +110,6 @@ public class PhaseService {
         ElevationSummary elevationSummary = analyzer.getElevation(phase.getStartTime(), phase.getStopTime(), training);
         phase.setAscent(elevationSummary.getAscent());
         phase.setDescent(elevationSummary.getDescent());
-
-        training.addPhase(phase);
-        return phaseRepository.save(phase);
     }
 
 

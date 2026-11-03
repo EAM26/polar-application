@@ -17,7 +17,7 @@ public class AnalyzerService {
     private final StatisticsCalculator calculator;
     private final DataRowService dataRowService;
 
-    public Double getAvgHeartRAte(int startTime, int stopTime, Training training) {
+    public Double getAvgHeartRate(int startTime, int stopTime, Training training) {
         List<Integer> hrColumn = training.getDataRowList().stream()
                 .filter(dataRow -> dataRow.getIndexSeconds() >= startTime &&
                         dataRow.getIndexSeconds() <= stopTime)

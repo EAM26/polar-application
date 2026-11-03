@@ -1,7 +1,9 @@
 package com.em26.controller;
 
+import com.em26.dto.TrainingAnalysisResponse;
 import com.em26.dto.TrainingRequest;
 import com.em26.dto.TrainingResponse;
+import com.em26.service.AnalysisBlockService;
 import com.em26.service.DataRowService;
 import com.em26.service.TrainingService;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ public class TrainingController {
 
     private final TrainingService trainingService;
     private final DataRowService dataRowService;
+    private final AnalysisBlockService analysisBlockService;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<TrainingResponse> createTraining(@RequestPart("request") TrainingRequest request, @RequestPart("file") MultipartFile file) {
@@ -52,6 +55,12 @@ public class TrainingController {
         if(isDeleted) return ResponseEntity.ok("Data rows deleted.");
         return ResponseEntity.badRequest().body("No data rows found");
 
+    }
+
+    @PostMapping("/{id}/analysis")
+    public ResponseEntity<TrainingAnalysisResponse> createAnalysis(@PathVariable Long id , @RequestParam int blockDuration) {
+        return ResponseEntity.ok(analysisBlockService.createAnalysis(id, blockDuration));
+//        return analysisBlockService.createAnalysis(id, blockDuration);
     }
 
 }
