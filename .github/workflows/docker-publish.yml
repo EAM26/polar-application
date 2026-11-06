@@ -58,17 +58,21 @@ jobs:
           labels: |
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
-
-  check-pi-connection:
+  deploy-to-pi:
     needs: build-and-publish
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
 
     permissions:
       contents: read
       id-token: write
 
     steps:
+      - name: Checkout source
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
       - name: Connect to Tailscale
         uses: tailscale/github-action@v4
         with:
@@ -78,14 +82,17 @@ jobs:
           version: latest
           ping: 100.126.90.73
 
-      - name: Test SSH connection to Pi
+      - name: Deploy exact image to Pi
         shell: bash
         env:
+          DEPLOY_IMAGE_TAG: sha-${{ github.sha }}
           PI_SSH_PRIVATE_KEY: ${{ secrets.PI_SSH_PRIVATE_KEY }}
           PI_SSH_KNOWN_HOSTS: ${{ vars.PI_SSH_KNOWN_HOSTS }}
         run: |
           set -euo pipefail
           umask 077
+
+          bash -n scripts/deploy-pi.sh
 
           printf '%s\n' "$PI_SSH_PRIVATE_KEY" > "$RUNNER_TEMP/pi_deploy_key"
           printf '%s\n' "$PI_SSH_KNOWN_HOSTS" > "$RUNNER_TEMP/pi_known_hosts"
@@ -98,4 +105,4 @@ jobs:
             -o UserKnownHostsFile="$RUNNER_TEMP/pi_known_hosts" \
             -o ConnectTimeout=15 \
             em26@100.126.90.73 \
-            'echo github-to-pi-ok'
+            "bash -s -- '$DEPLOY_IMAGE_TAG'" < scripts/deploy-pi.sh
