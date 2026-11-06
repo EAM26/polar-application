@@ -58,3 +58,44 @@ jobs:
           labels: |
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+
+  check-pi-connection:
+    needs: build-and-publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v4
+        with:
+          oauth-client-id: ${{ vars.TS_CLIENT_ID }}
+          audience: ${{ vars.TS_AUDIENCE }}
+          tags: tag:polar-ci
+          version: latest
+          ping: 100.126.90.73
+
+      - name: Test SSH connection to Pi
+        shell: bash
+        env:
+          PI_SSH_PRIVATE_KEY: ${{ secrets.PI_SSH_PRIVATE_KEY }}
+          PI_SSH_KNOWN_HOSTS: ${{ vars.PI_SSH_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          umask 077
+
+          printf '%s\n' "$PI_SSH_PRIVATE_KEY" > "$RUNNER_TEMP/pi_deploy_key"
+          printf '%s\n' "$PI_SSH_KNOWN_HOSTS" > "$RUNNER_TEMP/pi_known_hosts"
+
+          ssh \
+            -i "$RUNNER_TEMP/pi_deploy_key" \
+            -o IdentitiesOnly=yes \
+            -o BatchMode=yes \
+            -o StrictHostKeyChecking=yes \
+            -o UserKnownHostsFile="$RUNNER_TEMP/pi_known_hosts" \
+            -o ConnectTimeout=15 \
+            em26@100.126.90.73 \
+            'echo github-to-pi-ok'
