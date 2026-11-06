@@ -135,3 +135,10 @@
 - **Analysis endpoint:** Added an endpoint in `TrainingController` that accepts a training ID and block duration and returns the report as JSON.
 - **Metadata distinction:** Kept the original CSV totals separate from the calculated block measurements. The metadata describes the full recording, while the blocks cover the defined phases.
 - **Manual verification:** Generated and inspected a report for an imported running workout, including minute-by-minute measurements and the associated phase descriptions.
+
+## Step 14
+
+### Automated Raspberry Pi Deployment
+
+- **Deployment:** With guidance, configured automatic Docker image publishing and Raspberry Pi deployment after merges to `main`.
+- **Verification:** Checked that image `v0.2.0` runs on the Pi and that the API is reachable.
