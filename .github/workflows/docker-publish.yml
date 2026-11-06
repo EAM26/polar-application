@@ -17,6 +17,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
+    outputs:
+      image_tag: ${{ steps.version.outputs.image_tag }}
+
     steps:
       - name: Checkout source
         uses: actions/checkout@v7
@@ -29,6 +32,23 @@ jobs:
           distribution: temurin
           java-version: '21'
           cache: maven
+
+      - name: Read application version
+        id: version
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          version="$(bash ./mvnw --batch-mode --no-transfer-progress -q -Dstyle.color=never help:evaluate -Dexpression=project.version -DforceStdout)"
+
+          if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Expected a release version such as 0.2.0, got: $version" >&2
+            exit 1
+          fi
+
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "image_tag=v$version" >> "$GITHUB_OUTPUT"
+          echo "Application version: $version"
 
       - name: Build JAR without tests
         run: bash ./mvnw --batch-mode --no-transfer-progress -Dmaven.test.skip=true clean package
@@ -52,12 +72,12 @@ jobs:
           file: ./Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: |
-            em26/polar-app:sha-${{ github.sha }}
-            em26/polar-app:latest
+          tags: em26/polar-app:${{ steps.version.outputs.image_tag }}
           labels: |
+            org.opencontainers.image.version=${{ steps.version.outputs.version }}
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+
   deploy-to-pi:
     needs: build-and-publish
     runs-on: ubuntu-latest
@@ -85,7 +105,7 @@ jobs:
       - name: Deploy exact image to Pi
         shell: bash
         env:
-          DEPLOY_IMAGE_TAG: sha-${{ github.sha }}
+          DEPLOY_IMAGE_TAG: ${{ needs.build-and-publish.outputs.image_tag }}
           PI_SSH_PRIVATE_KEY: ${{ secrets.PI_SSH_PRIVATE_KEY }}
           PI_SSH_KNOWN_HOSTS: ${{ vars.PI_SSH_KNOWN_HOSTS }}
         run: |
