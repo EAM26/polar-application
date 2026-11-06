@@ -4,8 +4,8 @@ umask 077
 
 image_tag="${1:?Missing image tag}"
 
-if [[ ! "$image_tag" =~ ^sha-[0-9a-f]{40}$ ]]; then
-  echo "Invalid image tag: expected sha-<full commit SHA>" >&2
+if [[ ! "$image_tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+  echo "Invalid image tag: expected a release tag such as v0.2.0" >&2
   exit 1
 fi
 
